@@ -15,6 +15,7 @@
             <q-checkbox class="q-ml-sm" dense v-model="props.selected"/>
           </q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+          <q-td key="price" :props="props">{{ props.row.price }}</q-td>
           <q-td key="category_title" :props="props">
             <q-badge color="secondary">{{ props.row.category_title }}</q-badge>
           </q-td>
@@ -66,11 +67,11 @@
               <q-field :error="$v.form.auto_budget.$error">
                 <q-radio v-model="form.auto_budget" val="yes" label="SI"
                          :error="$v.form.auto_budget.$error"/>
-                <q-radio v-model="form.auto_budget" val="true" label="NO"
+                <q-radio v-model="form.auto_budget" val="no" label="NO"
                 />
               </q-field>
             </div>
-            <q-input label="Nombre del servicio" v-model="form.name"
+            <q-input label="Nombre del producto" v-model="form.name"
                      :error="$v.form.name.$error" @submit="submit"/>
             <q-input v-model="form.price" label="Precio (u$d)" class="q-mt-sm"
                      :error="$v.form.price.$error"></q-input>
@@ -78,6 +79,8 @@
 
           <q-card-section class="text-right">
             <q-space/>
+            <q-btn @click="showModalCreate = false" flat type="submit" color="primary"
+                   align="right" label="Cancelar"/>
             <q-btn @click="submit" type="submit" color="primary"
                    align="right" :label="form.id ? 'Actualizar' : 'Crear'"/>
           </q-card-section>
@@ -163,6 +166,14 @@
             name: 'name',
             field: 'name',
             label: 'Nombre',
+            align: 'left',
+            sortable: true,
+            required: true
+          },
+          {
+            name: 'price',
+            field: 'price',
+            label: 'Precio',
             align: 'left',
             sortable: true,
             required: true
@@ -259,7 +270,7 @@
         this.showModalCreate = true
         this.form.id = row.id
         this.form.price = row.price
-        this.form.auto_budget = row.auto_budget ? 'si' : 'no'
+        this.form.auto_budget = row.auto_budget ? 'yes' : 'no'
         this.form.category = row.category_title
         this.form.name = row.name
       },

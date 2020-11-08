@@ -109,10 +109,11 @@
               </div>
               <div class="col-md-8 q-pl-md">
                 <div class="q-pt-sm q-pb-sm">
-                  <q-markup-table dark class="bg-indigo-8">
+                  <q-markup-table dark class="bg-indigo-5">
                     <thead>
                     <tr>
                       <th class="text-left">Item</th>
+                      <th class="text-left">Cantidad</th>
                       <th class="text-right">Precio (U$D)</th>
                       <th class="text-right">IVA</th>
                       <th class="text-right">Monto</th>
@@ -121,9 +122,11 @@
                     <tbody>
                     <tr v-for="(item,value) in form.items" :key="value">
                       <td class="text-left">
-                        <q-select v-model="item.product"
-                                  :options="products"
-                                  label="Seleccione producto"/>
+                        {{ item.product.label }}
+                      </td>
+                      <td class="text-right" style="max-width: 50px;position: relative;">
+                        <q-input type="number" v-model="item.quantity"
+                            label="Cantidad" style="max-width: 50px !important;"/>
                       </td>
                       <td class="text-right">
                         <span v-text="item.product.price"></span>
@@ -380,9 +383,10 @@
         this.form.client = null
         this.form.details = null
         for (let i = 0; i < this.products.data.length; i++) {
+          debugger
           if (this.products.data[i].auto_budget) {
             this.form.items.push({
-              units: 1,
+              quantity: 1,
               product: this.products.data[i],
               price: this.products.data[i].price,
               iva: 10.5

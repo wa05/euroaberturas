@@ -15,14 +15,15 @@
             <q-checkbox class="q-ml-sm" dense v-model="props.selected"/>
           </q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+          <q-td key="price" :props="props">{{ props.row.price }}</q-td>
           <q-td key="category_title" :props="props">
             <q-badge color="secondary">{{ props.row.category_title }}</q-badge>
           </q-td>
           <q-td key="actions" :props="props">
-            <q-btn size="xs" @click="openDeleteModal(props.row)"
-                   class="q-mr-md" color="negative" icon="delete"/>
             <q-btn size="xs" @click="openUpdateModal(props.row)"
                    class="q-mr-md" color="info" icon="edit"/>
+            <q-btn size="xs" @click="openDeleteModal(props.row)"
+                   class="q-mr-md" color="negative" icon="delete"/>
           </q-td>
         </q-tr>
       </template>
@@ -39,10 +40,10 @@
         <q-card>
           <q-bar>
             <span v-if="!form.id">
-                  Crear producto
+                  Crear servicio
             </span>
             <span v-if="form.id">
-                  Actualizar producto
+                  Actualizar servicio
             </span>
             <q-space/>
 
@@ -61,7 +62,15 @@
                          :error="$v.form.category.$error"/>
               </q-field>
             </div>
-
+            <div class="q-gutter-sm">
+              Agregar a presupuesto por defecto
+              <q-field :error="$v.form.auto_budget.$error">
+                <q-radio v-model="form.auto_budget" val="yes" label="SI"
+                         :error="$v.form.auto_budget.$error"/>
+                <q-radio v-model="form.auto_budget" val="no" label="NO"
+                />
+              </q-field>
+            </div>
             <q-input label="Nombre del servicio" v-model="form.name"
                      :error="$v.form.name.$error"/>
             <q-input v-model="form.price" label="Precio (u$d)" class="q-mt-sm"
@@ -70,6 +79,8 @@
 
           <q-card-section class="text-right">
             <q-space/>
+            <q-btn @click="showModalCreate = false" flat type="submit" color="primary"
+                   align="right" label="Cancelar"/>
             <q-btn :disable="loadingSave"
                    @click="submit" type="submit" color="primary"
                    align="right" :label="form.id ? 'Actualizar' : 'Crear'"/>
@@ -161,6 +172,14 @@
             required: true
           },
           {
+            name: 'price',
+            field: 'price',
+            label: 'Precio',
+            align: 'left',
+            sortable: true,
+            required: true
+          },
+          {
             name: 'category_title',
             field: 'category_title',
             label: 'Categoría',
@@ -186,7 +205,8 @@
           name: null,
           price: null,
           category: 'ABERTURA',
-          type: 'service'
+          type: 'service',
+          auto_budget: 'no'
         },
         formDelete: {
           name: '',
@@ -201,6 +221,7 @@
         category: {required},
         type: {required},
         price: {required},
+        auto_budget: {required},
       }
     },
     mounted() {
@@ -244,6 +265,7 @@
       },
       openModalCreate() {
         this.showModalCreate = true
+        this.form.auto_budget = 'no'
         this.form.id = null
         this.form.category = null
         this.form.name = null
@@ -252,6 +274,7 @@
         this.showModalCreate = true
         this.form.id = row.id
         this.form.price = row.price
+        this.form.auto_budget = row.auto_budget ? 'yes' : 'no'
         this.form.category = row.category_title
         this.form.name = row.name
       },

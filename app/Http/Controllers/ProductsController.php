@@ -53,6 +53,7 @@ class ProductsController extends Controller
         $category = $request->category;
         $price = (float)$request->price;
         $id = $request->id;
+        $auto_budget = $request->auto_budget === 'yes';
 
         $product_category = ProductCategory::firstOrCreate([
             'tag' => $category,
@@ -68,6 +69,7 @@ class ProductsController extends Controller
             $product->name = $name;
             $product->type = $type;
             $product->price = $price;
+            $product->auto_budget = $auto_budget;
             $product->product_category_id = $product_category->id;
             $product->save();
         } else {
